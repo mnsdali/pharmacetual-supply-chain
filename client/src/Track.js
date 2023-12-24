@@ -6,6 +6,8 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
+
+
 function Track() {
     useEffect(() => {
         loadWeb3();
@@ -50,33 +52,33 @@ function Track() {
             const med = {};
             const medStage = [];
             for (i = 0; i < medCtr; i++) {
-                med[i + 1] = await supplychain.methods.MedicineStock(i + 1).call();
+                med[i + 1] = await supplychain.methods.getMedicine(i + 1).call();
                 medStage[i + 1] = await supplychain.methods.showStage(i + 1).call();
             }
             setMED(med);
             setMedStage(medStage);
-            const rmsCtr = await supplychain.methods.rmsCtr().call();
+            const rmsCtr = await supplychain.methods.rawMaterialSupplierCtr().call();
             const rms = {};
             for (i = 0; i < rmsCtr; i++) {
-                rms[i + 1] = await supplychain.methods.RMS(i + 1).call();
+                rms[i + 1] = await supplychain.methods.getRMS(i + 1).call();
             }
             setRMS(rms);
-            const manCtr = await supplychain.methods.manCtr().call();
+            const manCtr = await supplychain.methods.manufacturerCtr().call();
             const man = {};
             for (i = 0; i < manCtr; i++) {
-                man[i + 1] = await supplychain.methods.MAN(i + 1).call();
+                man[i + 1] = await supplychain.methods.getManufacturer(i + 1).call();
             }
             setMAN(man);
-            const disCtr = await supplychain.methods.disCtr().call();
+            const disCtr = await supplychain.methods.distributorCtr().call();
             const dis = {};
             for (i = 0; i < disCtr; i++) {
-                dis[i + 1] = await supplychain.methods.DIS(i + 1).call();
+                dis[i + 1] = await supplychain.methods.getDistributor(i + 1).call();
             }
             setDIS(dis);
-            const retCtr = await supplychain.methods.retCtr().call();
+            const retCtr = await supplychain.methods.retailerCtr().call();
             const ret = {};
             for (i = 0; i < retCtr; i++) {
-                ret[i + 1] = await supplychain.methods.RET(i + 1).call();
+                ret[i + 1] = await supplychain.methods.getRetailer(i + 1).call();
             }
             setRET(ret);
             setloader(false);
@@ -119,6 +121,8 @@ function Track() {
                         <th>Description</th>
                         <th>Composition</th>
                         <th>Quantity</th>
+                        <th>Created Date</th>
+                        <th>Updated Date</th>
                         <th>Current Processing Stage</th>
                         <th>Actions</th>
                     </tr>
@@ -132,6 +136,8 @@ function Track() {
                                 <td>{MED[key]?.description?.length > 40 ? MED[key]?.description?.substring(1, 40)+"..."  : MED[key]?.description}</td>
                                 <td>{MED[key]?.compositions?.length > 40 ? MED[key]?.compositions?.substring(1, 40)+"..."  : MED[key]?.compositions}</td>
                                 <td>{MED[key].quantity}</td>
+                                <td>{MED[key].create_date}</td>
+                                <td>{MED[key].update_date}</td>
                                 <td>{MedStage[key]}</td>
                                 <td> <button className="btn btn-outline-success btn-sm" onClick={(event) => trackDetails(event, MED[key]?.id, MED[key])}>Track Order</button></td>
                             </tr>
@@ -157,6 +163,10 @@ function Track() {
                         <span><b> Composition: </b>{MED[ID]?.compositions}</span>
                         <br />
                         <span><b> Quantity: </b>{MED[ID]?.quantity}</span>
+                        <br />
+                        <span><b> Order created on: </b>{MED[ID]?.create_date}</span>
+                        <br />
+                        <span><b> Last update on: </b>{MED[ID]?.update_date}</span>
                         <br />
                         <span><b> Current stage: </b>{MedStage[ID]}</span>
                     </div>}

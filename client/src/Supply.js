@@ -4,6 +4,23 @@ import SupplyChainABI from "./artifacts/SupplyChain.json"
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+
+function getDateNow() {
+    const currentDate = new Date();
+
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const year = currentDate.getFullYear();
+
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+    const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+    return formattedDateTime;
+}
+
 function Supply() {
     useEffect(() => {
         loadWeb3();
@@ -47,7 +64,7 @@ function Supply() {
             const med = {};
             const medStage = [];
             for (i = 0; i < medCtr; i++) {
-                med[i] = await supplychain.methods.MedicineStock(i + 1).call();
+                med[i] = await supplychain.methods.getMedicine(i + 1).call();
                 medStage[i] = await supplychain.methods.showStage(i + 1).call();
             }
             setMED(med);
@@ -79,7 +96,8 @@ function Supply() {
     const handlerSubmitRMSsupply = async (event, ID) => {
         event.preventDefault();
         try {
-            var reciept = await SupplyChain.methods.RMSsupply(ID).send({ from: currentaccount });
+            var dateNow = getDateNow()
+            var reciept = await SupplyChain.methods.RMSsupply(ID,dateNow).send({ from: currentaccount });
             if (reciept) {
                 loadBlockchaindata();
             }
@@ -91,7 +109,8 @@ function Supply() {
     const handlerSubmitManufacturing = async (event, ID) => {
         event.preventDefault();
         try {
-            var reciept = await SupplyChain.methods.Manufacturing(ID).send({ from: currentaccount });
+            var dateNow = getDateNow()
+            var reciept = await SupplyChain.methods.Manufacturing(ID, dateNow).send({ from: currentaccount });
             if (reciept) {
                 loadBlockchaindata();
             }
@@ -103,7 +122,8 @@ function Supply() {
     const handlerSubmitDistribute = async (event, ID) => {
         event.preventDefault();
         try {
-            var reciept = await SupplyChain.methods.Distribute(ID).send({ from: currentaccount });
+            var dateNow = getDateNow()
+            var reciept = await SupplyChain.methods.Distribute(ID,dateNow).send({ from: currentaccount });
             if (reciept) {
                 loadBlockchaindata();
             }
@@ -115,7 +135,8 @@ function Supply() {
     const handlerSubmitRetail = async (event, ID) => {
         event.preventDefault();
         try {
-            var reciept = await SupplyChain.methods.Retail(ID).send({ from: currentaccount });
+            var dateNow = getDateNow()
+            var reciept = await SupplyChain.methods.Retail(ID, dateNow).send({ from: currentaccount });
             if (reciept) {
                 loadBlockchaindata();
             }
@@ -127,7 +148,8 @@ function Supply() {
     const handlerSubmitSold = async (event, ID) => {
         event.preventDefault();
         try {
-            var reciept = await SupplyChain.methods.sold(ID).send({ from: currentaccount });
+            var dateNow = getDateNow()
+            var reciept = await SupplyChain.methods.sold(ID,dateNow).send({ from: currentaccount });
             if (reciept) {
                 loadBlockchaindata();
             }
@@ -167,6 +189,8 @@ function Supply() {
                         <th>Description</th>
                         <th>Composition</th>
                         <th>Quantity</th>
+                        <th>Creation Date</th>
+                        <th>Update Date</th>
                         <th>Current Processing Stage</th>
                         <th>Actions</th>
                     </tr>
@@ -180,6 +204,8 @@ function Supply() {
                                 <td>{MED[key]?.description?.length > 40 ? MED[key]?.description?.substring(1, 40)+"..."  : MED[key]?.description}</td>
                                 <td>{MED[key]?.compositions?.length > 40 ? MED[key]?.compositions?.substring(1, 40)+"..."  : MED[key]?.compositions}</td>
                                 <td>{MED[key].quantity}</td>
+                                <td>{MED[key].create_date}</td>
+                                <td>{MED[key].update_date}</td>
                                 <td>{MedStage[key]}</td>
                                 <td>
                                 {MedStage[key] === "Medicine Ordered" && <button className="btn btn-outline-success btn-sm" onClick={(event) => handlerSubmitRMSsupply(event, MED[key].id)}>Supply</button>}

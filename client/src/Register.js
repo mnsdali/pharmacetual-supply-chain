@@ -8,6 +8,7 @@ import Breadcrumb from "react-bootstrap/Breadcrumb";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
+
 function Register() {
   useEffect(() => {
     loadWeb3();
@@ -121,9 +122,9 @@ function Register() {
             
             <Card.Body  onClick={() =>
                   cilickOnCard(
-                    "rmsCtr",
-                    "RMS",
-                    "addRMS",
+                    "rawMaterialSupplierCtr",
+                    "getRMS",
+                    "addRawMaterialSupplier",
                     "Raw Material Suppliers"
                   )
                 }>
@@ -139,8 +140,8 @@ function Register() {
             <Card.Body
             onClick={() =>
               cilickOnCard(
-                "manCtr",
-                "MAN",
+                "manufacturerCtr",
+                "getManufacturer",
                 "addManufacturer",
                 "Manufacturers"
               )
@@ -157,8 +158,8 @@ function Register() {
             
             <Card.Body onClick={() =>
                   cilickOnCard(
-                    "disCtr",
-                    "DIS",
+                    "distributorCtr",
+                    "getDistributor",
                     "addDistributor",
                     "Distributors"
                   )
@@ -173,7 +174,7 @@ function Register() {
           <Card>
             
             <Card.Body onClick={() =>
-                  cilickOnCard("retCtr", "RET", "addRetailer", "Retailers")
+                  cilickOnCard("retCtr", "getRetailer", "addRetailer", "Retailers")
                 }><Card.Title>Retailers</Card.Title> 
                 
                 <Card.Img

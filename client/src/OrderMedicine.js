@@ -5,6 +5,22 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
+
+function getDateNow() {
+    const currentDate = new Date();
+
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const year = currentDate.getFullYear();
+
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+    const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+    return formattedDateTime;
+}
 function OrderMedicine() {
     useEffect(() => {
         loadWeb3();
@@ -52,7 +68,7 @@ function OrderMedicine() {
             const med = {};
             const medStage = [];
             for (i = 0; i < medCtr; i++) {
-                med[i] = await supplychain.methods.MedicineStock(i + 1).call();
+                med[i] = await supplychain.methods.getMedicine(i + 1).call();
                 medStage[i] = await supplychain.methods.showStage(i + 1).call();
             }
             setMED(med);
@@ -96,8 +112,10 @@ function OrderMedicine() {
     const handlerSubmitMED = async (event) => {
         event.preventDefault();
         try {
-            var reciept = await SupplyChain.methods.addMedicine(MedName, MedDes,MedComs, MedQuant).send({ from: currentaccount });
-            // console.log(reciept);
+            // create current date with format "dd/MM/yyyy HH:MM:SS"
+            var dateNow = getDateNow();
+            var reciept = await SupplyChain.methods.addMedicine(MedName, MedDes,MedComs, MedQuant, dateNow).send({ from: currentaccount });
+            console.log(reciept);
             // if (reciept) {
             //     loadBlockchaindata();
             // }
@@ -123,6 +141,8 @@ function OrderMedicine() {
                         <th style={{width:"10%"}}>Description</th>
                         <th style={{width:"10%"}}>Composition</th>
                         <th style={{width:"10%"}}>Quantity</th>
+                        <th style={{width:"10%"}}>Creation Date</th>
+                        <th style={{width:"10%"}}>Update Date</th>
                         <th style={{width:"10%"}}>Current Stage</th>
                     </tr>
                 </thead>
@@ -136,6 +156,8 @@ function OrderMedicine() {
                                 <td style={{width:"10%"}}>{MED[key]?.description?.length > 40 ? MED[key]?.description?.substring(1, 40)+"..."  : MED[key]?.description}</td>
                                 <td style={{width:"10%"}}>{MED[key]?.compositions?.length > 40 ? MED[key]?.compositions?.substring(1, 40)+"..."  : MED[key]?.compositions}</td>
                                 <td style={{width:"10%"}}>{MED[key]?.quantity}</td>
+                                <td style={{width:"10%"}}>{MED[key]?.create_date}</td>
+                                <td style={{width:"10%"}}>{MED[key]?.update_date}</td>
                                 <td style={{width:"10%"}}>{MedStage[key]}</td>
                             </tr>
                         )
